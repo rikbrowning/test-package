@@ -16,6 +16,6 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm set //npm.pkg.github.com/:_authToken $(publishToken)
-    npm publish
+    - npm set //npm.pkg.github.com/:_authToken $(publishToken)
+    - npm publish
   displayName: 'npm install'
