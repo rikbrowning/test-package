@@ -15,5 +15,5 @@ steps:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
 
-- script: npm publish -registry http://npm.pkg.github.com/:_authToken=$(publishToken)
+- script: npm publish --scope=@rikbrowning --registry=http://npm.pkg.github.com/:_authToken=$(publishToken)
     
