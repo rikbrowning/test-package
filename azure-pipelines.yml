@@ -17,11 +17,14 @@ steps:
   displayName: 'Install Node.js'
 
     
-- task: CmdLine@2
+
+- task: Bash@3
   inputs:
+    targetType: 'inline'
     script: |
-      echo "@rikbrowning:registry=https://npm.pkg.github.com/:_authToken=%PUBLISHTOKEN%" > ~/.npmrc
-      
+      $token=$(PUBLISHTOKEN)
+      echo "@rikbrowning:registry=https://npm.pkg.github.com/:_authToken=$token" > ~/.npmrc
+          
       npm publish
-      
+            
       echo 'Congrats on your publication!'
