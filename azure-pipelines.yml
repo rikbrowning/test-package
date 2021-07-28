@@ -20,7 +20,7 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      echo "@rikbrowning:registry=https://npm.pkg.github.com/:_authToken=$(publishToken)" > ~/.npmrc
+      echo "@rikbrowning:registry=https://npm.pkg.github.com/:_authToken=%PUBLISHTOKEN%" > ~/.npmrc
       
       npm publish
       
