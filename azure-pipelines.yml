@@ -18,3 +18,9 @@ steps:
 - script: npm set //npm.pkg.github.com/:_authToken $(publishToken)
 - script: npm publish
 
+
+- script:
+    npm config set registry //npm.pkg.github.com/:_authToken=$(publishToken)
+    npm config list
+    npm publish
+    
