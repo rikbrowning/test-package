@@ -23,10 +23,10 @@ steps:
     targetType: 'inline'
     script: |
       
-      echo "@rikbrowning:registry=https://npm.pkg.github.com/:_authToken=$token" > ./.npmrc
+      echo "@rikbrowning:registry=//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ./.npmrc
       cat ./.npmrc
       npm publish
             
       echo 'Congrats on your publication!'
   env:
-    token: $(PUBLISHTOKEN)
+    NPM_TOKEN: $(PUBLISHTOKEN)
