@@ -22,9 +22,11 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $token=$(PUBLISHTOKEN)
-      echo "@rikbrowning:registry=https://npm.pkg.github.com/:_authToken=$token" > ~/.npmrc
-          
+      
+      echo "@rikbrowning:registry=https://npm.pkg.github.com/:_authToken=$token" > ./.npmrc
+      cat ./.npmrc
       npm publish
             
       echo 'Congrats on your publication!'
+  env:
+    token: $(PUBLISHTOKEN)
