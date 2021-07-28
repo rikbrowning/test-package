@@ -1,4 +1,5 @@
 # Node.js
+
 # Build a general Node.js project with npm.
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
@@ -15,5 +16,12 @@ steps:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
 
-- script: npm publish --scope=@rikbrowning --registry=http://npm.pkg.github.com/:_authToken=$(publishToken)
     
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo "@rikbrowning:registry=https://npm.pkg.github.com/:_authToken=$(publishToken)" > ~/.npmrc
+      
+      npm publish
+      
+      echo 'Congrats on your publication!'
