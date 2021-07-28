@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rikbrowning/test-package.git"
+    "url": "git://github.com//rikbrowning/test-package.git"
   },
   "author": "Rik Browning",
   "license": "UNLICENSED",
