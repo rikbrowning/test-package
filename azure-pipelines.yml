@@ -15,8 +15,5 @@ steps:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
 
-- script:
-    npm config set registry //npm.pkg.github.com/:_authToken=$(publishToken)
-    npm config list
-    npm publish
+- script: npm publish -registry //npm.pkg.github.com/:_authToken=$(publishToken)
     
