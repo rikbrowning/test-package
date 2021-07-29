@@ -22,7 +22,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      npm publish --scope=@rikbrowning --registry=http://npm.pkg.github.com/:_authToken=$NPM_TOKEN
+      npm publish
             
       echo 'Congrats on your publication!'
   env:
