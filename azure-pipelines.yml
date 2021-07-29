@@ -22,7 +22,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      npm publish
+      npm publish --access public
             
       echo 'Congrats on your publication!'
   env:
