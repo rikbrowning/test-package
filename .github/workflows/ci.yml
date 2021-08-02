@@ -44,7 +44,9 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
       - run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
       - name: NPM version
-        run: npm version from-git --no-git-tag-version
+        run: npm version $version --no-git-tag-version
+        env:
+          version: ${{ env.RELEASE_TAG }}
       - name: NPM publish
         run: npm publish --access public
       - name: GitHub release
