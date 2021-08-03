@@ -72,7 +72,7 @@ jobs:
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v2.1.1
         with:
-          configuration: "config.json"
+          configuration: "./.github/workflows/config.json"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -89,6 +89,7 @@ jobs:
         run: echo "$BODY" | cat - ./CHANGELOG.md > /tmp/out && mv /tmp/out ./CHANGELOG.md
         env:
           BODY: ${{steps.github_release.outputs.changelog}}
+      - run: git checkout main
       - run: git add -A
       - run: git commit -m "chore(post-release) updating change log $VERSION"
       - name: Push Release
