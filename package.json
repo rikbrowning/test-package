@@ -1,6 +1,6 @@
 {
   "name": "@rikbrowning/test-package",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "a test package for testing",
   "main": "index.js",
   "scripts": {
