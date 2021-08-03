@@ -90,8 +90,9 @@ jobs:
           release_name: ${{ env.VERSION }}
           body: ${{steps.github_release.outputs.changelog}}
       - name: Update CHANGELOG
-        run: echo "$VERSION" | cat - ./CHANGELOG.md > /tmp/out && mv /tmp/out ./CHANGELOG.md
-        run: git add -A
-        run: git commit --amend --no-edit
+        run: |
+          echo "$VERSION" | cat - ./CHANGELOG.md > /tmp/out && mv /tmp/out ./CHANGELOG.md
+          git add -A
+          git commit --amend --no-edit
       - name: Push Release
-        run: git pushS
+        run: git push
