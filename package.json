@@ -3,6 +3,9 @@
   "version": "1.0.11",
   "description": "a test package for testing",
   "main": "index.js",
+  "scripts": {
+    "release":"node ./scripts/release.js"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com//rikbrowning/test-package.git"
@@ -12,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/rikbrowning/test-package/issues"
   },
-  "homepage": "https://github.com/rikbrowning/test-package#readme"
+  "homepage": "https://github.com/rikbrowning/test-package#readme",
+  "devDependencies": {
+    "shelljs": "^0.8.4"
+  }
 }
