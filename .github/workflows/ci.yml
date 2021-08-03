@@ -74,7 +74,7 @@ jobs:
       - name: NPM publish
         run: npm publish --access public
       - name: Push Release
-        run: git push
+        run: git push --follow-tags
       - name: Create Change Log
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v2.1.1
