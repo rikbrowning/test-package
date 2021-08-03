@@ -89,7 +89,7 @@ jobs:
         run: echo "$BODY" | cat - ./CHANGELOG.md > /tmp/out && mv /tmp/out ./CHANGELOG.md
         env:
           BODY: ${{steps.github_release.outputs.changelog}}
-      - run: git checkout main
+      - run: git checkout -b main --track origin/main
       - run: git add -A
       - run: git commit -m "chore(post-release) updating change log $VERSION"
       - name: Push Release
