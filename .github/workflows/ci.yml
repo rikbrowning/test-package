@@ -66,7 +66,8 @@ jobs:
             node_modules
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
-
+      - run: git config --global user.email "rikyb88@gmail.com"
+      - run: git config --global user.name "Rik Browning"
       - name: NPM version
         run: npm version $VERSION -m 'chore(release) version %s'
 
@@ -89,10 +90,9 @@ jobs:
           tag_name: ${{ env.VERSION }}
           release_name: ${{ env.VERSION }}
           body: ${{steps.github_release.outputs.changelog}}
-      - name: Update CHANGELOG
-        run: |
-          echo "$VERSION" | cat - ./CHANGELOG.md > /tmp/out && mv /tmp/out ./CHANGELOG.md
-          git add -A
-          git commit --amend --no-edit
+      - name: Update Changelog
+        run: echo "$VERSION" | cat - ./CHANGELOG.md > /tmp/out && mv /tmp/out ./CHANGELOG.md
+      - run: git add -A
+      - run: git commit --amend --no-edit
       - name: Push Release
         run: git push
