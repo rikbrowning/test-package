@@ -3,17 +3,42 @@
 
 name: CI
 
-on: [push, pull_request]
+on: 
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
 
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
+  VERSION: ${{ github.event.inputs.version }}
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
 
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/cache@v2
+          with:
+            path: |
+              node_modules
+              **/node_modules
+            key: ${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
+        - name: Use Node.js 16.x
+          uses: actions/setup-node@v2
+          with:
+            node-version: 16.x
+        - name: Run lint
+          run: npm run lint --if-present
+        - name: Completed Lint
+          run: echo "HOORRAAYYY!!"
+  build:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -31,9 +56,9 @@ jobs:
       - name: Completed Build
         run: echo "HOORRAAYYY!!"
   release:
-    needs: [build]
+    needs: [lint, build]
     runs-on: ubuntu-latest 
-    if: github.event_name == 'push' && startswith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -42,18 +67,32 @@ jobs:
             node_modules
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
-      - run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: NPM version
-        run: npm version $version --no-git-tag-version
-        env:
-          version: ${{ env.RELEASE_TAG }}
+        run: npm version $VERSION -m 'chore(release) version %s'
+
       - name: NPM publish
         run: npm publish --access public
+      - name: Create Change Log
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@2
+        with:
+          commitMode: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: GitHub release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.RELEASE_TAG }}
-          release_name: ${{ env.RELEASE_TAG }}
+          tag_name: ${{ env.VERSION }}
+          release_name: ${{ env.VERSION }}
+          body: ${{steps.github_release.outputs.changelog}}
+      - name: Update CHANGELOG
+        run: echo "$VERSION" | cat - ./CHANGELOG.md > /tmp/out && mv /tmp/out ./CHANGELOG.md
+        run: git add -A
+        run: git commit --amend --no-edit
+      - name: Push Release
+        run: git pushS
