@@ -73,6 +73,8 @@ jobs:
 
       - name: NPM publish
         run: npm publish --access public
+      - name: Push Release
+        run: git push
       - name: Create Change Log
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v2.1.1
@@ -93,6 +95,6 @@ jobs:
       - name: Update Changelog
         run: echo "$VERSION" | cat - ./CHANGELOG.md > /tmp/out && mv /tmp/out ./CHANGELOG.md
       - run: git add -A
-      - run: git commit --amend --no-edit
+      - run: git commit -m "chore(post-release) updating change log $VERSION"
       - name: Push Release
         run: git push
