@@ -74,7 +74,7 @@ jobs:
         run: npm publish --access public
       - name: Create Change Log
         id: github_release
-        uses: mikepenz/release-changelog-builder-action@2
+        uses: mikepenz/release-changelog-builder-action@v2.1.1
         with:
           commitMode: true
         env:
