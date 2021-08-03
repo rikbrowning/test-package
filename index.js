@@ -1,1 +1,3 @@
-export default () => console.log("test");
+const feature="test";
+
+export default () => console.log(feature);
