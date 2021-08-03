@@ -62,8 +62,6 @@ jobs:
             node_modules
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
-      - run: git config --global user.email "$CI_EMAIL"
-      - run: git config --global user.name "$CI_USER"
       - run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: NPM publish
@@ -89,8 +87,13 @@ jobs:
         run: echo "$BODY" | cat - ./CHANGELOG.md > /tmp/out && mv /tmp/out ./CHANGELOG.md
         env:
           BODY: ${{steps.github_release.outputs.changelog}}
-      - run: git checkout -b main --track origin/main
-      - run: git add -A
-      - run: git commit -m "chore(post-release) updating change log $VERSION"
-      - name: Push Release
-        run: git push
+      - name: Publish New ChangeLog
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: 'CHANGELOG.md'
+          author_name: ${{ env.CI_USER }}
+          author_email: ${{ env.CI_EMAIL }}
+          branch: main
+          push: true
+          message: 'chore(post-release) updating change log $VERSION'
+
