@@ -7,10 +7,10 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-  inputs:
-    version:
-      description: 'Version'
-      required: true
+    inputs:
+      version:
+        description: 'Version'
+        required: true
 
 
 env:
