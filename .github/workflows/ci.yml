@@ -6,6 +6,11 @@ name: CI
 on: 
   push:
   pull_request:
+  workflow_dispatch:
+  inputs:
+    version:
+      description: 'Version'
+      required: true
 
 
 env:
@@ -13,6 +18,7 @@ env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   CI_USER: ${{ secrets.CI_USER}}
   CI_EMAIL: ${{ secrets.CI_EMAIL }}
+  VERSION: ${{ github.event.inputs.version }}
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -53,7 +59,7 @@ jobs:
   release:
     needs: [lint, build]
     runs-on: ubuntu-latest 
-    if: github.event_name == 'push' && startswith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -62,38 +68,41 @@ jobs:
             node_modules
             **/node_modules
           key: ${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
-      - run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - run: git config --global user.email "$CI_EMAIL"
+      - run: git config --global user.name "$CI_USER"
+      - name: NPM version
+        run: npm version $VERSION -m 'chore(release) version %s'
 
       - name: NPM publish
         run: npm publish --access public
-      - name: Create Change Log
-        id: github_release
-        uses: mikepenz/release-changelog-builder-action@v2.1.1
-        with:
-          configuration: "./.github/workflows/config.json"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: GitHub release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Changelog
+        uses: yashanand1910/standard-release-notes@v1.2.1
+        id: get_release_notes
         with:
-          tag_name: ${{ env.VERSION }}
-          release_name: ${{ env.VERSION }}
-          body: ${{steps.github_release.outputs.changelog}}
+          version: ${{ github.event.inputs.version }} # Required
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ${{ steps.get_release_notes.outputs.release_notes }}
+          draft: false
+          prerelease: false
+
       - name: Update Changelog
         run: echo "$BODY" | cat - ./CHANGELOG.md > /tmp/out && mv /tmp/out ./CHANGELOG.md
         env:
-          BODY: ${{steps.github_release.outputs.changelog}}
-      - name: Publish New ChangeLog
-        uses: EndBug/add-and-commit@v7
-        with:
-          add: 'CHANGELOG.md'
-          author_name: ${{ env.CI_USER }}
-          author_email: ${{ env.CI_EMAIL }}
-          branch: main
-          push: true
-          message: 'chore(post-release) updating change log $VERSION'
+          BODY:  ${{ steps.get_release_notes.outputs.release_notes }}
+      - run: git add -A
+      - run: git commit -m "chore(changelog) updating change log $VERSION"
+        env:
+          VERSION:  ${{ VERSION }}
+      - name: Push Release
+        run: git push
 
