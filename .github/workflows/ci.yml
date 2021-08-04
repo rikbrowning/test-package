@@ -102,7 +102,7 @@ jobs:
       - run: git add -A
       - run: git commit -m "chore(changelog) updating change log $VERSION"
         env:
-          VERSION:  ${{ VERSION }}
+          VERSION:  ${{ github.event.inputs.version }}
       - name: Push Release
         run: git push
 
