@@ -70,8 +70,9 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
       - run: git config --global user.email "$CI_EMAIL"
       - run: git config --global user.name "$CI_USER"
+      - run: npm ci
       - name: NPM version
-        run: npm version $VERSION -m 'chore(release) version %s'
+        run: npm version $VERSION -m 'chore(release): version %s'
 
       - name: NPM publish
         run: npm publish --access public
@@ -100,7 +101,7 @@ jobs:
         env:
           BODY:  ${{ steps.get_release_notes.outputs.release_notes }}
       - run: git add -A
-      - run: git commit -m "chore(changelog) updating change log $VERSION"
+      - run: git commit -m "chore(changelog): updating change log $VERSION"
         env:
           VERSION:  ${{ github.event.inputs.version }}
       - name: Push Release
