@@ -4,7 +4,6 @@
   "description": "a test package for testing",
   "main": "index.js",
   "scripts": {
-    "release": "node ./scripts/release.js",
     "prepare": "husky install"
   },
   "repository": {
@@ -18,8 +17,7 @@
   },
   "homepage": "https://github.com/rikbrowning/test-package#readme",
   "devDependencies": {
-    "husky": "^7.0.0",
-    "shelljs": "^0.8.4"
+    "husky": "^7.0.0"
   },
   "dependencies": {
     "@commitlint/cli": "^13.1.0",
