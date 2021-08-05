@@ -83,9 +83,7 @@ jobs:
         run: npm run changelog
       
       - run: git add -A
-      - run: git commit -m "$MESSAGE" 
-        env:
-          MESSAGE: ${{ format('chore(changelog){0} updating changelog {1}', ':', github.event.inputs.version) }} 
+      - run: git commit --amend --no-edit 
       - name: Push Changelog
         run: git push
       
