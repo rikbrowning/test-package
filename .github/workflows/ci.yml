@@ -71,6 +71,7 @@ jobs:
       - run: git config --global user.email "$CI_EMAIL"
       - run: git config --global user.name "$CI_USER"
       - run: npm ci
+
       - name: NPM version
         run: npm version $VERSION -m "$MESSAGE"
         env:
@@ -78,7 +79,17 @@ jobs:
       - name: NPM publish
         run: npm publish --access public
 
-      - name: Changelog
+      - name: Generate Changelog
+        run: npm run changelog
+      
+      - run: git add -A
+      - run: git commit -m "$MESSAGE" 
+        env:
+          MESSAGE: ${{ format('chore(changelog){0} updating changelog {1}', ':', github.event.inputs.version) }} 
+      - name: Push Changelog
+        run: git push
+      
+      - name: Extract Changelog
         uses: yashanand1910/standard-release-notes@v1.2.1
         id: get_release_notes
         with:
@@ -97,14 +108,4 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Update Changelog
-        run: echo "$BODY" | cat - ./CHANGELOG.md > /tmp/out && mv /tmp/out ./CHANGELOG.md
-        env:
-          BODY:  ${{ steps.get_release_notes.outputs.release_notes }}
-      - run: git add -A
-      - run: git commit -m "$MESSAGE" 
-        env:
-          MESSAGE: ${{ format('chore(changelog){0} updating changelog {1}', ':', github.event.inputs.version) }} 
-      - name: Push Release
-        run: git push
 
