@@ -72,8 +72,9 @@ jobs:
       - run: git config --global user.name "$CI_USER"
       - run: npm ci
       - name: NPM version
-        run: npm version $VERSION -m 'chore(release): version %s'
-
+        run: npm version $VERSION -m "$MESSAGE"
+        env:
+          MESSAGE: ${{ format('chore(release){0} version %s', ':') }}
       - name: NPM publish
         run: npm publish --access public
 
@@ -101,9 +102,9 @@ jobs:
         env:
           BODY:  ${{ steps.get_release_notes.outputs.release_notes }}
       - run: git add -A
-      - run: git commit -m "chore(changelog): updating change log $VERSION"
+      - run: git commit -m "$MESSAGE" 
         env:
-          VERSION:  ${{ github.event.inputs.version }}
+          MESSAGE: ${{ format('chore(changelog){0} updating changelog {1}', ':', github.event.inputs.version) }} 
       - name: Push Release
         run: git push
 
