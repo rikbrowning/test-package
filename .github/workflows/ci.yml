@@ -84,16 +84,6 @@ jobs:
       - name: Push Version Tag
         run: git push origin $VERSION
 
-
-      - name: Generate Changelog
-        run: npm run changelog      
-      - run: git add -A
-      - run: git commit -m "$MESSAGE" 
-        env:
-          MESSAGE: ${{ format('chore(changelog){0} updating changelog {1}', ':', github.event.inputs.version) }} 
-      - name: Push Changelog
-        run: git push
-      
       - name: Extract Changelog
         uses: yashanand1910/standard-release-notes@v1.2.1
         id: get_release_notes
