@@ -79,11 +79,18 @@ jobs:
       - name: NPM publish
         run: npm publish --access public
 
+      - name: Push Version Commit
+        run: git push
+      - name: Push Version Tag
+        run: git push origin $VERSION
+
+
       - name: Generate Changelog
-        run: npm run changelog
-      
+        run: npm run changelog      
       - run: git add -A
-      - run: git commit --amend --no-edit 
+      - run: git commit -m "$MESSAGE" 
+        env:
+          MESSAGE: ${{ format('chore(changelog){0} updating changelog {1}', ':', github.event.inputs.version) }} 
       - name: Push Changelog
         run: git push
       
