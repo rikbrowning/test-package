@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "prepare": "husky install",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
+    "test":"jest --coverage --ci --reporters=default --reporters=jest-Junit"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,9 @@
   },
   "homepage": "https://github.com/rikbrowning/test-package#readme",
   "devDependencies": {
-    "husky": "^7.0.0"
+    "husky": "^7.0.0",
+    "jest": "^27.0.6",
+    "jest-junit": "^12.2.0"
   },
   "dependencies": {
     "@commitlint/cli": "^13.1.0",
